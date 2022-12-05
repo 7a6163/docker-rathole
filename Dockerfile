@@ -7,4 +7,4 @@ FROM alpine
 WORKDIR /app
 RUN apk add --no-cache tini
 COPY --from=builder /rathole /usr/bin/rathole
-ENTRYPOINT ENTRYPOINT ["/sbin/tini", "--", "/usr/bin/rathole"]
+ENTRYPOINT ["/sbin/tini", "--", "/usr/bin/rathole"]
