@@ -14,8 +14,7 @@ ARG VERSION=v0.5.0
 # Download and unzip the precompiled binary
 RUN wget https://github.com/rapiz1/rathole/releases/download/${VERSION}/rathole-${PLATFORM}.zip && \
     unzip rathole-${PLATFORM}.zip && \
-    mv rathole-${PLATFORM} /usr/bin/rathole && \
-    chmod +x /usr/bin/rathole
+    mv rathole /usr/bin/rathole
 
 # Set the entrypoint
 ENTRYPOINT ["/sbin/tini", "--"]
