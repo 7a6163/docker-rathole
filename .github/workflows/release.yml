@@ -2,6 +2,8 @@ name: Build and Push Docker Images
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*.*.*'
 
@@ -16,8 +18,8 @@ jobs:
     strategy:
       matrix:
         platform: 
-          - linux/amd64
-          - linux/arm64
+          - amd64
+          - arm64
 
     steps:
       - name: Checkout code
@@ -48,12 +50,21 @@ jobs:
         id: extract_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
+      - name: Set file name for platform
+        id: set_filename
+        run: |
+          if [ "${{ matrix.platform }}" == "amd64" ]; then
+            echo "FILENAME=x86_64-unknown-linux-gnu" >> $GITHUB_ENV
+          elif [ "${{ matrix.platform }}" == "arm64" ]; then
+            echo "FILENAME=aarch64-unknown-linux-musl" >> $GITHUB_ENV
+          fi
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           build-args: |
-            PLATFORM=${{ matrix.platform }}
+            FILENAME=${{ env.FILENAME }}
             VERSION=${{ env.VERSION }}
           push: true
           tags: |

@@ -1,20 +1,32 @@
-# Use a minimal base image
+# Stage 1: Builder
+FROM alpine as builder
+
+# Set the working directory
+WORKDIR /app
+
+# Install necessary packages
+RUN apk add --no-cache unzip wget
+
+# Define build arguments
+ARG FILENAME
+ARG VERSION
+
+# Download and unzip the precompiled binary
+RUN echo "Downloading from https://github.com/rapiz1/rathole/releases/download/v${VERSION}/rathole-${FILENAME}.zip" && \
+    wget https://github.com/rapiz1/rathole/releases/download/v${VERSION}/rathole-${FILENAME}.zip && \
+    unzip rathole-${FILENAME}.zip
+
+# Stage 2: Final Image
 FROM alpine
 
 # Set the working directory
 WORKDIR /app
 
 # Install necessary packages
-RUN apk add --no-cache tini unzip wget
+RUN apk add --no-cache tini
 
-# Define build arguments
-ARG PLATFORM
-ARG VERSION=0.5.0
-
-# Download and unzip the precompiled binary
-RUN wget https://github.com/rapiz1/rathole/releases/download/v${VERSION}/rathole-${PLATFORM}.zip && \
-    unzip rathole-${PLATFORM}.zip && \
-    mv rathole /usr/bin/rathole
+# Copy the precompiled binary from the builder stage
+COPY --from=builder /app/rathole /usr/bin/rathole
 
 # Set the entrypoint
 ENTRYPOINT ["/sbin/tini", "--"]
