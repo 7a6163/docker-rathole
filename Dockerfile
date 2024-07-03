@@ -9,10 +9,10 @@ RUN apk add --no-cache tini unzip wget
 
 # Define build arguments
 ARG PLATFORM
-ARG VERSION=v0.5.0
+ARG VERSION=0.5.0
 
 # Download and unzip the precompiled binary
-RUN wget https://github.com/rapiz1/rathole/releases/download/${VERSION}/rathole-${PLATFORM}.zip && \
+RUN wget https://github.com/rapiz1/rathole/releases/download/v${VERSION}/rathole-${PLATFORM}.zip && \
     unzip rathole-${PLATFORM}.zip && \
     mv rathole /usr/bin/rathole
 
