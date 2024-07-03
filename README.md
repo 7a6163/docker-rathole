@@ -11,6 +11,8 @@ The Docker setup uses a multi-stage build process:
 Supported platforms:
 - `amd64`
 - `arm64`
+- `arm/v7`
+- `arm/v6`
 
 ## Usage
 
