@@ -48,7 +48,7 @@ jobs:
 
       - name: Extract version from Git tag
         id: extract_version
-        run: echo "::set-output name=VERSION::${GITHUB_REF#refs/tags/v}"
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Build and push Docker image to GHCR
         uses: docker/build-push-action@v4
@@ -56,11 +56,11 @@ jobs:
           context: .
           build-args: |
             PLATFORM=${{ matrix.platform }}
-            VERSION=${{ steps.extract_version.outputs.VERSION }}
+            VERSION=${{ env.VERSION }}
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/rathole:${{ matrix.platform }}-latest
-            ghcr.io/${{ github.repository_owner }}/rathole:${{ matrix.platform }}-v${{ steps.extract_version.outputs.VERSION }}
+            ghcr.io/${{ github.repository_owner }}/rathole:${{ matrix.platform }}-v${{ env.VERSION }}
           platforms: linux/amd64,linux/arm64
 
       - name: Build and push Docker image to Docker Hub
@@ -69,9 +69,9 @@ jobs:
           context: .
           build-args: |
             PLATFORM=${{ matrix.platform }}
-            VERSION=${{ steps.extract_version.outputs.VERSION }}
+            VERSION=${{ env.VERSION }}
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/rathole:${{ matrix.platform }}-latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/rathole:${{ matrix.platform }}-v${{ steps.extract_version.outputs.VERSION }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/rathole:${{ matrix.platform }}-v${{ env.VERSION }}
           platforms: linux/amd64,linux/arm64
