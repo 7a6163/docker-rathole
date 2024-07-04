@@ -1,5 +1,5 @@
 # Stage 1: Builder
-FROM alpine as builder
+FROM alpine AS builder
 
 # Set the working directory
 WORKDIR /app
